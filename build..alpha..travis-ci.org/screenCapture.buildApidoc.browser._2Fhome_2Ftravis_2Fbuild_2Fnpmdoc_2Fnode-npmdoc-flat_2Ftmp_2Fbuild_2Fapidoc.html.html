@@ -1,0 +1,228 @@
+<html><head></head><body><div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a href="https://github.com/hughsk/flat">flat (v2.0.1)</a>
+</h1>
+<h4>Take a nested Javascript object and flatten it, or unflatten an object with delimited keys</h4>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.flat">module flat</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.flat.flatten">
+            function <span class="apidocSignatureSpan">flat.</span>flatten
+            <span class="apidocSignatureSpan">(target, opts)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.flat.unflatten">
+            function <span class="apidocSignatureSpan">flat.</span>unflatten
+            <span class="apidocSignatureSpan">(target, opts)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.flat" id="apidoc.module.flat">module flat</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.flat.flatten" id="apidoc.element.flat.flatten">
+        function <span class="apidocSignatureSpan">flat.</span>flatten
+        <span class="apidocSignatureSpan">(target, opts)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function flatten(target, opts) {
+  opts = opts || {}
+
+  var delimiter = opts.delimiter || '.'
+  var maxDepth = opts.maxDepth
+  var output = {}
+
+  function step(object, prev, currentDepth) {
+    currentDepth = currentDepth ? currentDepth : 1
+    Object.keys(object).forEach(function(key) {
+      var value = object[key]
+      var isarray = opts.safe &amp;&amp; Array.isArray(value)
+      var type = Object.prototype.toString.call(value)
+      var isbuffer = isBuffer(value)
+      var isobject = (
+        type === "[object Object]" ||
+        type === "[object Array]"
+      )
+
+      var newKey = prev
+        ? prev + delimiter + key
+        : key
+
+      if (!isarray &amp;&amp; !isbuffer &amp;&amp; isobject &amp;&amp; Object.keys(value).length &amp;&amp;
+        (!opts.maxDepth || currentDepth &lt; maxDepth)) {
+        return step(value, newKey, currentDepth + 1)
+      }
+
+      output[newKey] = value
+    })
+  }
+
+  step(target)
+
+  return output
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.flat.unflatten" id="apidoc.element.flat.unflatten">
+        function <span class="apidocSignatureSpan">flat.</span>unflatten
+        <span class="apidocSignatureSpan">(target, opts)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function unflatten(target, opts) {
+  opts = opts || {}
+
+  var delimiter = opts.delimiter || '.'
+  var overwrite = opts.overwrite || false
+  var result = {}
+
+  var isbuffer = isBuffer(target)
+  if (isbuffer || Object.prototype.toString.call(target) !== '[object Object]') {
+    return target
+  }
+
+  // safely ensure that the key is
+  // an integer.
+  function getkey(key) {
+    var parsedKey = Number(key)
+
+    return (
+      isNaN(parsedKey) ||
+      key.indexOf('.') !== -1
+    ) ? key
+      : parsedKey
+  }
+
+  Object.keys(target).forEach(function(key) {
+    var split = key.split(delimiter)
+    var key1 = getkey(split.shift())
+    var key2 = getkey(split[0])
+    var recipient = result
+
+    while (key2 !== undefined) {
+      var type = Object.prototype.toString.call(recipient[key1])
+      var isobject = (
+        type === "[object Object]" ||
+        type === "[object Array]"
+      )
+
+      // do not write over falsey, non-undefined values if overwrite is false
+      if (!overwrite &amp;&amp; !isobject &amp;&amp; typeof recipient[key1] !== 'undefined') {
+        return
+      }
+
+      if ((overwrite &amp;&amp; !isobject) || (!overwrite &amp;&amp; recipient[key1] == null)) {
+        recipient[key1] = (
+          typeof key2 === 'number' &amp;&amp;
+          !opts.object ? [] : {}
+        )
+      }
+
+      recipient = recipient[key1]
+      if (split.length &gt; 0) {
+        key1 = getkey(split.shift())
+        key2 = getkey(split[0])
+      }
+    }
+
+    // unflatten again for 'messy objects'
+    recipient[key1] = unflatten(target[key], opts)
+  })
+
+  return result
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+//   'key2.keyB': 'valueII',
+//   'key3.a.b.c': 2
+// }
+```
+
+### unflatten(original, options)
+
+Flattening is reversible too, you can call `flatten.<span class="apidocCodeKeywordSpan">unflatten</span>()` on an object:
+
+``` javascript
+var unflatten = require('flat').unflatten
+
+unflatten({
+'three.levels.deep': 42,
+'three.levels': {
+...</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
+</body></html>
