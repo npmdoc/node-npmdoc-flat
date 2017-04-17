@@ -1,4 +1,4 @@
-<div class="apidocDiv">
+<html><head></head><body><div class="apidocDiv">
 <style>
 /*csslint
 */
@@ -47,17 +47,10 @@
 }
 </style>
 <h1>api documentation for
-    <a
-
-        href="https://github.com/hughsk/flat"
-
-    >flat (v2.0.1)</a>
+    <a href="https://github.com/hughsk/flat">flat (v2.0.1)</a>
 </h1>
 <h4>Take a nested Javascript object and flatten it, or unflatten an object with delimited keys</h4>
-<div class="apidocSectionDiv"><a
-    href="#apidoc.tableOfContents"
-    id="apidoc.tableOfContents"
-><h1>table of contents</h1></a><ol>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
 
     <li class="apidocModuleLi"><a href="#apidoc.module.flat">module flat</a><ol>
 
@@ -141,7 +134,7 @@
     <li>description and source-code<pre class="apidocCodePre">function flatten(target, opts) {
   opts = opts || {}
 
-  var delimiter = opts.delimiter || &#x27;.&#x27;
+  var delimiter = opts.delimiter || '.'
   var maxDepth = opts.maxDepth
   var output = {}
 
@@ -149,20 +142,20 @@
     currentDepth = currentDepth ? currentDepth : 1
     Object.keys(object).forEach(function(key) {
       var value = object[key]
-      var isarray = opts.safe &#x26;&#x26; Array.isArray(value)
+      var isarray = opts.safe &amp;&amp; Array.isArray(value)
       var type = Object.prototype.toString.call(value)
       var isbuffer = isBuffer(value)
       var isobject = (
-        type === &#x22;[object Object]&#x22; ||
-        type === &#x22;[object Array]&#x22;
+        type === "[object Object]" ||
+        type === "[object Array]"
       )
 
       var newKey = prev
         ? prev + delimiter + key
         : key
 
-      if (!isarray &#x26;&#x26; !isbuffer &#x26;&#x26; isobject &#x26;&#x26; Object.keys(value).length &#x26;&#x26;
-        (!opts.maxDepth || currentDepth &#x3c; maxDepth)) {
+      if (!isarray &amp;&amp; !isbuffer &amp;&amp; isobject &amp;&amp; Object.keys(value).length &amp;&amp;
+        (!opts.maxDepth || currentDepth &lt; maxDepth)) {
         return step(value, newKey, currentDepth + 1)
       }
 
@@ -189,7 +182,7 @@
     <li>description and source-code<pre class="apidocCodePre">function flatten(target, opts) {
   opts = opts || {}
 
-  var delimiter = opts.delimiter || &#x27;.&#x27;
+  var delimiter = opts.delimiter || '.'
   var maxDepth = opts.maxDepth
   var output = {}
 
@@ -197,20 +190,20 @@
     currentDepth = currentDepth ? currentDepth : 1
     Object.keys(object).forEach(function(key) {
       var value = object[key]
-      var isarray = opts.safe &#x26;&#x26; Array.isArray(value)
+      var isarray = opts.safe &amp;&amp; Array.isArray(value)
       var type = Object.prototype.toString.call(value)
       var isbuffer = isBuffer(value)
       var isobject = (
-        type === &#x22;[object Object]&#x22; ||
-        type === &#x22;[object Array]&#x22;
+        type === "[object Object]" ||
+        type === "[object Array]"
       )
 
       var newKey = prev
         ? prev + delimiter + key
         : key
 
-      if (!isarray &#x26;&#x26; !isbuffer &#x26;&#x26; isobject &#x26;&#x26; Object.keys(value).length &#x26;&#x26;
-        (!opts.maxDepth || currentDepth &#x3c; maxDepth)) {
+      if (!isarray &amp;&amp; !isbuffer &amp;&amp; isobject &amp;&amp; Object.keys(value).length &amp;&amp;
+        (!opts.maxDepth || currentDepth &lt; maxDepth)) {
         return step(value, newKey, currentDepth + 1)
       }
 
@@ -252,12 +245,12 @@
     <li>description and source-code<pre class="apidocCodePre">function unflatten(target, opts) {
   opts = opts || {}
 
-  var delimiter = opts.delimiter || &#x27;.&#x27;
+  var delimiter = opts.delimiter || '.'
   var overwrite = opts.overwrite || false
   var result = {}
 
   var isbuffer = isBuffer(target)
-  if (isbuffer || Object.prototype.toString.call(target) !== &#x27;[object Object]&#x27;) {
+  if (isbuffer || Object.prototype.toString.call(target) !== '[object Object]') {
     return target
   }
 
@@ -268,7 +261,7 @@
 
     return (
       isNaN(parsedKey) ||
-      key.indexOf(&#x27;.&#x27;) !== -1
+      key.indexOf('.') !== -1
     ) ? key
       : parsedKey
   }
@@ -282,38 +275,38 @@
     while (key2 !== undefined) {
       var type = Object.prototype.toString.call(recipient[key1])
       var isobject = (
-        type === &#x22;[object Object]&#x22; ||
-        type === &#x22;[object Array]&#x22;
+        type === "[object Object]" ||
+        type === "[object Array]"
       )
 
       // do not write over falsey, non-undefined values if overwrite is false
-      if (!overwrite &#x26;&#x26; !isobject &#x26;&#x26; typeof recipient[key1] !== &#x27;undefined&#x27;) {
+      if (!overwrite &amp;&amp; !isobject &amp;&amp; typeof recipient[key1] !== 'undefined') {
         return
       }
 
-      if ((overwrite &#x26;&#x26; !isobject) || (!overwrite &#x26;&#x26; recipient[key1] == null)) {
+      if ((overwrite &amp;&amp; !isobject) || (!overwrite &amp;&amp; recipient[key1] == null)) {
         recipient[key1] = (
-          typeof key2 === &#x27;number&#x27; &#x26;&#x26;
+          typeof key2 === 'number' &amp;&amp;
           !opts.object ? [] : {}
         )
       }
 
       recipient = recipient[key1]
-      if (split.length &#x3e; 0) {
+      if (split.length &gt; 0) {
         key1 = getkey(split.shift())
         key2 = getkey(split[0])
       }
     }
 
-    // unflatten again for &#x27;messy objects&#x27;
+    // unflatten again for 'messy objects'
     recipient[key1] = unflatten(target[key], opts)
   })
 
   return result
 }</pre></li>
     <li>example usage<pre class="apidocCodePre">...
-//   &#x27;key2.keyB&#x27;: &#x27;valueII&#x27;,
-//   &#x27;key3.a.b.c&#x27;: 2
+//   'key2.keyB': 'valueII',
+//   'key3.a.b.c': 2
 // }
 ```
 
@@ -322,11 +315,11 @@
 Flattening is reversible too, you can call `flatten.<span class="apidocCodeKeywordSpan">unflatten</span>()` on an object:
 
 ``` javascript
-var unflatten = require(&#x27;flat&#x27;).unflatten
+var unflatten = require('flat').unflatten
 
 unflatten({
-&#x27;three.levels.deep&#x27;: 42,
-&#x27;three.levels&#x27;: {
+'three.levels.deep': 42,
+'three.levels': {
 ...</pre></li>
     </ul>
 
@@ -365,12 +358,12 @@ unflatten({
     <li>description and source-code<pre class="apidocCodePre">function unflatten(target, opts) {
   opts = opts || {}
 
-  var delimiter = opts.delimiter || &#x27;.&#x27;
+  var delimiter = opts.delimiter || '.'
   var overwrite = opts.overwrite || false
   var result = {}
 
   var isbuffer = isBuffer(target)
-  if (isbuffer || Object.prototype.toString.call(target) !== &#x27;[object Object]&#x27;) {
+  if (isbuffer || Object.prototype.toString.call(target) !== '[object Object]') {
     return target
   }
 
@@ -381,7 +374,7 @@ unflatten({
 
     return (
       isNaN(parsedKey) ||
-      key.indexOf(&#x27;.&#x27;) !== -1
+      key.indexOf('.') !== -1
     ) ? key
       : parsedKey
   }
@@ -395,38 +388,38 @@ unflatten({
     while (key2 !== undefined) {
       var type = Object.prototype.toString.call(recipient[key1])
       var isobject = (
-        type === &#x22;[object Object]&#x22; ||
-        type === &#x22;[object Array]&#x22;
+        type === "[object Object]" ||
+        type === "[object Array]"
       )
 
       // do not write over falsey, non-undefined values if overwrite is false
-      if (!overwrite &#x26;&#x26; !isobject &#x26;&#x26; typeof recipient[key1] !== &#x27;undefined&#x27;) {
+      if (!overwrite &amp;&amp; !isobject &amp;&amp; typeof recipient[key1] !== 'undefined') {
         return
       }
 
-      if ((overwrite &#x26;&#x26; !isobject) || (!overwrite &#x26;&#x26; recipient[key1] == null)) {
+      if ((overwrite &amp;&amp; !isobject) || (!overwrite &amp;&amp; recipient[key1] == null)) {
         recipient[key1] = (
-          typeof key2 === &#x27;number&#x27; &#x26;&#x26;
+          typeof key2 === 'number' &amp;&amp;
           !opts.object ? [] : {}
         )
       }
 
       recipient = recipient[key1]
-      if (split.length &#x3e; 0) {
+      if (split.length &gt; 0) {
         key1 = getkey(split.shift())
         key2 = getkey(split[0])
       }
     }
 
-    // unflatten again for &#x27;messy objects&#x27;
+    // unflatten again for 'messy objects'
     recipient[key1] = unflatten(target[key], opts)
   })
 
   return result
 }</pre></li>
     <li>example usage<pre class="apidocCodePre">...
-//   &#x27;key2.keyB&#x27;: &#x27;valueII&#x27;,
-//   &#x27;key3.a.b.c&#x27;: 2
+//   'key2.keyB': 'valueII',
+//   'key3.a.b.c': 2
 // }
 ```
 
@@ -435,11 +428,11 @@ unflatten({
 Flattening is reversible too, you can call `flatten.<span class="apidocCodeKeywordSpan">unflatten</span>()` on an object:
 
 ``` javascript
-var unflatten = require(&#x27;flat&#x27;).unflatten
+var unflatten = require('flat').unflatten
 
 unflatten({
-&#x27;three.levels.deep&#x27;: 42,
-&#x27;three.levels&#x27;: {
+'three.levels.deep': 42,
+'three.levels': {
 ...</pre></li>
     </ul>
 
@@ -452,3 +445,4 @@ unflatten({
     ]
 </div>
 </div>
+</body></html>
