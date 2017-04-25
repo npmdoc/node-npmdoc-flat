@@ -1,4 +1,7 @@
-# api documentation for  [flat (v2.0.1)](https://github.com/hughsk/flat)  [![npm package](https://img.shields.io/npm/v/npmdoc-flat.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-flat) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-flat.svg)](https://travis-ci.org/npmdoc/node-npmdoc-flat)
+# npmdoc-flat
+
+#### basic api documentation for  [flat (v2.0.1)](https://github.com/hughsk/flat)  [![npm package](https://img.shields.io/npm/v/npmdoc-flat.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-flat) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-flat.svg)](https://travis-ci.org/npmdoc/node-npmdoc-flat)
+
 #### Take a nested Javascript object and flatten it, or unflatten an object with delimited keys
 
 [![NPM](https://nodei.co/npm/flat.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/flat)
@@ -69,7 +72,8 @@
     "scripts": {
         "test": "mocha -u tdd --reporter spec"
     },
-    "version": "2.0.1"
+    "version": "2.0.1",
+    "bin": {}
 }
 ```
 
